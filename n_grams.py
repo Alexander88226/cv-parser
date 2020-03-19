@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 # Input the file 
 txt1 = [] 
 file_path = sys.argv[1]
-with open(file_path) as file: 
+with open(file_path, encoding='utf-8', errors='ignore') as file: 
 	txt1 = file.readlines() 
 
 
@@ -21,7 +21,7 @@ with open(file_path) as file:
 
 wordnet_lemmatizer = WordNetLemmatizer()
 def lemmatizing(text):
-    word_tokens = word_tokenize(text)
+    word_tokens = word_tokenize(str(text))
     lemmatized_word = [wordnet_lemmatizer.lemmatize(word) for word in word_tokens]
     return ' '.join(s for s in lemmatized_word)
 
@@ -65,15 +65,15 @@ for i, line in enumerate(txt1):
 output_file = open("new.txt", 'w', encoding='utf-8')
 output_file.writelines(txt1)
 output_file.close()
-# Getting bi-grams
-vectorizer = CountVectorizer(ngram_range = (2,2)) 
+# Getting bi-grams and tri-grams
+vectorizer = CountVectorizer(ngram_range = (2,3)) 
 X1 = vectorizer.fit_transform(txt1) 
 features = (vectorizer.get_feature_names()) 
 # print("\n\nFeatures : \n", features) 
 # print("\n\nX1 : \n", X1.toarray()) 
 
 # Applying TFIDF for scoring
-vectorizer = TfidfVectorizer(ngram_range = (2,2)) 
+vectorizer = TfidfVectorizer(ngram_range = (2,3)) 
 X2 = vectorizer.fit_transform(txt1) 
 scores = (X2.toarray()) 
 # print("\n\nScores : \n", scores) 
