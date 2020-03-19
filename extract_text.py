@@ -2,9 +2,10 @@
 ############# Point 1
 
 # importing libraries 
-import os, os.path 
   
 import os
+import sys
+import os, os.path 
 import re
 import codecs
 import string
@@ -25,8 +26,8 @@ from pdfminer.image import ImageWriter
 
 
 ## Set important paths
-DOCS_PDF = os.path.join(os.getcwd(), "cv documents")
-print(os.getcwd())
+pdf_path = sys.argv[1]
+DOCS_PDF = os.path.join(os.getcwd(), pdf_path)
 def get_pdf_docs(path=DOCS_PDF):
 	"""
 	Returns a filtered list of paths to PDF files
