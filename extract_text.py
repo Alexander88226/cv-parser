@@ -23,11 +23,13 @@ from pdfminer.converter import XMLConverter, HTMLConverter, TextConverter
 from pdfminer.cmapdb import CMapDB
 from pdfminer.layout import LAParams
 from pdfminer.image import ImageWriter
+from docx import Document
 
 
 ## Set important paths
 pdf_path = sys.argv[1]
 DOCS_PDF = os.path.join(os.getcwd(), pdf_path)
+DOCS_DOCX = os.path.join(os.getcwd(), pdf_path)
 def get_pdf_docs(path=DOCS_PDF):
 	"""
 	Returns a filtered list of paths to PDF files
@@ -35,6 +37,12 @@ def get_pdf_docs(path=DOCS_PDF):
 	for name in os.listdir(path):
 		if name.endswith('.pdf'):
 			yield os.path.join(path, name)
+
+def get_docx_doc(path=DOCS_DOCX):
+	for name in os.listdir(path):
+		if name.endswith('.docx'):
+			yield os.path.join(path, name)
+
 def convert_pdf_to_txt(path):
     rsrcmgr = PDFResourceManager()
     retstr = StringIO()
@@ -82,7 +90,26 @@ def extract_pdf_corpus(DOCS_PDF=DOCS_PDF, corpusval=extract):
 		document=document.replace('\/',' ')
 		with codecs.open(outp, 'w', encoding='utf-8', errors='ignore') as f:
 			f.write(document)
+
+def extract_docx_text(DOCS_DOCX=DOCS_DOCX, corpusval=extract):
+	for path in get_docx_doc(DOCS_DOCX):
+		document = Document(path)
+		txt = ""
+		for paragraph in document.paragraphs:
+			txt += paragraph.text
+		txt=txt.replace('\n',' ')
+		txt=txt.replace('\r',' ')
+		txt=txt.replace(',',' ')
+		txt=txt.replace('-',' ')
+		txt=txt.replace(':',' ')
+		txt=txt.replace('\/',' ')
+		filen = os.path.splitext(os.path.basename(path))[0] + "1.txt"
+		outp = os.path.join(corpusval, filen)
+		with codecs.open(outp, 'w', encoding='utf-8', errors='ignore') as f:
+			f.write(txt)
 # Run the extraction
 extract_pdf_corpus()
+extract_docx_text()
+
 
 
